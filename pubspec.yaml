@@ -1,0 +1,36 @@
+name: e_doctor
+description: An e doctor application
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.6.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  story_view: ^0.11.2
+  firebase_auth: ^0.15.5+3
+  # Wraps NSUserDefaults (on iOS) and SharedPreferences (on Android),
+  shared_preferences: ^0.5.6+3
+  # Keychain for ios aes secret for android with keyStore
+  flutter_secure_storage: ^3.3.1+1
+  # firebase auth
+  firebase_messaging: ^6.0.13
+  # lazy load + increased scalability for classes with a listening mecanism that grows exponentially in complexity
+  provider: 4.1.0-dev+2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+
+  assets:
+    - assets/
