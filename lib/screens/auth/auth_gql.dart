@@ -1,4 +1,4 @@
-String signinMutation = gql("""
+String signinMutation = """
 mutation Login(\$email:String!, \$password:String!,\$fcmToken:String){
   login(email:\$email,password:\$password,fcmToken:\$fcmToken){
     error{
@@ -8,9 +8,9 @@ mutation Login(\$email:String!, \$password:String!,\$fcmToken:String){
     token
   }
 }
-""");
+""";
 
-String signupMutation = gql"""
+String signupMutation = """
 mutation Register(\$email:String!, \$password:String!,\$name:String!,\$fcmToken:String){
   register(email:\$email,password:\$password,name:\$name,fcmToken:\$fcmToken){
     error{
@@ -20,4 +20,4 @@ mutation Register(\$email:String!, \$password:String!,\$name:String!,\$fcmToken:
     token
   }
 }
-""");
+""";

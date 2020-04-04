@@ -2,29 +2,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:e_doctor/tabs/CallsTab.dart';
-import 'package:e_doctor/tabs/CameraTab.dart';
 import 'package:e_doctor/tabs/ChatsTab.dart';
-import 'package:e_doctor/tabs/StatusTab.dart';
 
 import 'package:e_doctor/constants/colors.dart';
 // import 'package:e_doctor/constants/gradients.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 class HomePage extends StatelessWidget {
-  HomePage() {
-    print(getCurrentUser());
-  }
-
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      // length specifies the number of tabs 
+      length: 2,
       initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
@@ -35,18 +28,12 @@ class HomePage extends StatelessWidget {
             ),
           ),
           centerTitle: false,
-          backgroundColor: LIGHT_GREEN,
+          backgroundColor: PALE_ORANGE,
           bottom: TabBar(
-            indicatorColor: Colors.white,
+            indicatorColor: LIGHT_GREY_COLOR,
             tabs: <Widget>[
               Tab(
-                icon: Icon(Icons.camera_alt),
-              ),
-              Tab(
                 text: "CHATS",
-              ),
-              Tab(
-                text: "STATUS",
               ),
               Tab(
                 text: "CALLS",
@@ -66,9 +53,7 @@ class HomePage extends StatelessWidget {
         ),
         body: TabBarView(
           children: <Widget>[
-            CameraTab(),
             ChatsTab(),
-            StatusTab(),
             CallsTab(),
           ],
         ),
@@ -76,7 +61,9 @@ class HomePage extends StatelessWidget {
           child: Icon(
             Icons.chat
           ),
-          onPressed: (){},
+          onPressed: () async {
+            // final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+          },
           backgroundColor: PALE_ORANGE,
         ),
       ),

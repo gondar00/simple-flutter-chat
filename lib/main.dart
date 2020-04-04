@@ -5,36 +5,57 @@ import 'package:e_doctor/state/app_state.dart';
 import 'package:e_doctor/screens/auth/auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
-void main() => runApp(App());
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString('token');
+  HttpLink httpLink = HttpLink(uri: 'https://chapserver.herokuapp.com/');
+
+  final AuthLink authLink = AuthLink(
+    getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+    // OR
+    // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  );
+
+  final Link link = authLink.concat(httpLink);
+
+  ValueNotifier<GraphQLClient> client = ValueNotifier(
+    GraphQLClient(cache: InMemoryCache(), link: link),
+  );
+  runApp(App(auth: token != null, client: client ));
+}
 
 class App extends StatelessWidget {
   final bool auth;
   final client;
-
-  // Initialize the above variables
-  App({ this.auth = false, this.client }) {
-    getCurrentUser();
-  }
-
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user;
-  }
+  App({this.auth = false, this.client});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AuthPage(auth: auth),
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: primaryColor,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: primaryColor,
+    return GraphQLProvider(
+    client: client,
+    child: CacheProvider(
+        child: ChangeNotifierProvider<AppState>(
+          create: (_) => AppState(),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: AuthPage(),
+            theme: ThemeData(
+              brightness: Brightness.light,
+              primaryColor: primaryColor,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              primaryColor: primaryColor,
+            ),
+          ),
+        ),
       ),
     );
   }

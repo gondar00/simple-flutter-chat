@@ -1,25 +1,29 @@
 import 'package:e_doctor/constants/colors.dart';
 import 'package:e_doctor/constants/gradients.dart';
+
 import 'package:e_doctor/state/app_state.dart';
 import 'package:e_doctor/screens/home/home.dart';
-// import 'package:e_doctor/screens/auth/auth_gql.dart';
-// import 'package:e_doctor/screens/auth/model.dart';
+import 'package:e_doctor/screens/ChatScreen.dart';
+
+import 'package:e_doctor/screens/auth/auth_gql.dart';
+import 'package:e_doctor/screens/auth/model.dart';
 // import 'package:e_doctor/screens/chats/chats.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:e_doctor/state/app_state.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
 
-// import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthViews extends StatefulWidget {
   final bool signup;
@@ -31,34 +35,24 @@ class AuthViews extends StatefulWidget {
 class _AuthViewsState extends State<AuthViews> {
   Map<String, String> inputValues = {};
   Map<String, bool> boolValues = {};
-  String fcmToken = "";
   String errorText = "";
-
-  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  // // _firebaseMessaging.requestNotificationPermissions()
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getToken();
-  // }
-
-  // Future<void> getToken() async {
-  //   final token = await _firebaseMessaging.getToken();
-  //   setState(() {
-  //     fcmToken = token;
-  //   });
-  // }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<FirebaseUser> _handleSignIn() async {
-    final FirebaseUser user = (
-      await _auth.createUserWithEmailAndPassword(
-        email: inputValues["email"],
-        password: inputValues["password"],
-      )
-    ).user;
-    print(user);
+    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+      email: inputValues["email"],
+      password: inputValues["password"],
+    )).user;
+
+    return user;
+  }
+
+  Future<FirebaseUser> _handleSignUp() async {
+    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+      email: inputValues["email"],
+      password: inputValues["password"],
+    )).user;
 
     return user;
   }
@@ -88,8 +82,8 @@ class _AuthViewsState extends State<AuthViews> {
         Container(margin: EdgeInsets.only(top: 10)),
         errorMessageComponent(),
         Container(margin: EdgeInsets.only(top: widget.signup ? 30 : 30)),
-        // mutationComponent(context),
-        gradientButtonComponent()
+        mutationComponent(context),
+        // gradientButtonComponent()
       ],
     );
   }
@@ -153,67 +147,73 @@ class _AuthViewsState extends State<AuthViews> {
     );
   }
 
-  // Widget mutationComponent(context) {
-  //   final appState = Provider.of<AppState>(context);
+  Widget mutationComponent(context) {
+    final appState = Provider.of<AppState>(context);
 
-  //   return Mutation(
-  //     update: (Cache cache, QueryResult result) => cache,
-  //     builder: (run, result) => gradientButtonComponent(run, result),
-  //     options: MutationOptions(
-  //       document: widget.signup ? signupMutation : signinMutation,
-  //     ),
-  //     onCompleted: (result) async {
-  //       final response = AuthModel.fromJson(
-  //         result[widget.signup ? 'register' : 'login'],
-  //       );
+    return Mutation(
+      builder: (RunMutation run, QueryResult result) => gradientButtonComponent(run, result),
+      options: MutationOptions(
+        documentNode: widget.signup ? gql(signupMutation) : gql(signinMutation),
+        update: (Cache cache, QueryResult result) => cache,
+          onCompleted: (dynamic result) async {
+          final response = AuthModel.fromJson(
+            result[widget.signup ? 'register' : 'login'],
+          );
 
-  //       if (response.error == null && response.token != null) {
-  //         SharedPreferences prefs = await SharedPreferences.getInstance();
-  //         await prefs.setString("uid", response.id);
-  //         await prefs.setString("token", response.token);
+          if (response.error == null) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString("uid", response.id);
+            await prefs.setString("token", response.token);
 
-  //         appState.setToken(response.token);
+            appState.setToken(response.token);
+          }
+          if (response.error != null) {
+            setState(() {
+              errorText = response.error.message ?? "";
+            });
+          }
+        },
+      ),
+    );
+  }
 
-  //         // Navigator.pushReplacement(
-  //         //   context,
-  //         //   MaterialPageRoute(
-  //         //     builder: (context) => ChatListScreen(),
-  //         //   ),
-  //         // );
-  //       }
-  //       if (response.error != null) {
-  //         setState(() {
-  //           errorText = response.error.message ?? "";
-  //         });
-  //       }
-  //     },
-  //   );
-  // }
-
-  Widget gradientButtonComponent() {
+  Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
     return GestureDetector(
       onTap: () {
-        String email = inputValues["email"] ?? "";
-        String pass = inputValues["password"] ?? "";
+        String email = inputValues["email"].trim() ?? "";
+        String pass = inputValues["password"].trim() ?? "";
         if (email != "" && pass != "") {
-            // runMutation({
-            //   "email": email,
-            //   "password": pass,
-            //   "name": name,
-            //   "fcmToken": fcmToken
-            // });
-          // final appState = Provider.of<AppState>(context, listen: false);
-          _handleSignIn()
-            .then((FirebaseUser user) => {
-              // appState.setToken(user.uid),
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ),
-              )
+          if(widget.signup) {
+            _handleSignUp().then((FirebaseUser user) => {
+                runMutation({
+                  "email": email,
+                  "password": pass,
+                  "fcmToken": user.uid
+                }),
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                )
             })
-            .catchError((e) => print(e));            
+            .catchError((e) => print(e));  
+          } else {
+              _handleSignIn().then((FirebaseUser user) => {
+                runMutation({
+                  "email": email,
+                  "password": pass,
+                  "fcmToken": user.uid
+                }),
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                )
+            })
+            .catchError((e) => print(e));  
+          }
         }
       },
       child: Container(
@@ -233,13 +233,13 @@ class _AuthViewsState extends State<AuthViews> {
         ),
         child: Center(
           child: Text(
-                  "CONTINUE",
-                  style: TextStyle(
-                    color: widget.signup ? WHITE_COLOR : WHITE_COLOR,
-                    fontSize: 18,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
+            "CONTINUE",
+            style: TextStyle(
+              color: widget.signup ? WHITE_COLOR : WHITE_COLOR,
+              fontSize: 18,
+              fontFamily: 'Roboto',
+            ),
+          ),
         ),
       ),
     );
@@ -261,5 +261,5 @@ Widget gradientTextComponent(Gradient gradient, String text, {
       fontSize: size,
       fontWeight: weight,
       foreground: Paint()..shader = linearGradient),
-  );
+    );
 }

@@ -1,3 +1,4 @@
+import 'package:e_doctor/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:e_doctor/config/config.dart';
 import 'package:e_doctor/models/ChatListItem.dart';
@@ -37,15 +38,16 @@ class ChatScreen extends StatelessWidget {
               message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 5,
-            ),
-            margin: EdgeInsets.symmetric(
-              horizontal: 20,
+              horizontal: 15,
               vertical: 10,
             ),
+            // margin: EdgeInsets.symmetric(
+            //   horizontal: 20,
+            //   vertical: 10,
+            // ),
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Color(0xFFDCF8C6),
+              color: message.isSentByMe ? PURPLE_COLOR : Colors.grey[200],
               boxShadow: [
                 BoxShadow(
                   blurRadius: 2,
@@ -53,13 +55,13 @@ class ChatScreen extends StatelessWidget {
                   offset: Offset(1, 2),
                 ),
               ],
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               message.message,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black
+                color: message.isSentByMe ? WHITE_COLOR : Colors.black,
               ),
             ),
           ),
@@ -92,11 +94,10 @@ class ChatScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.attach_file,color: Colors.black,),
             onPressed: () {},
-
           ),
           FloatingActionButton(
             mini: true,
-            backgroundColor: primaryColor,
+            backgroundColor: LIGHT_GREEN,
             onPressed: (){},
             child: Icon(Icons.send,),
           ),
@@ -108,17 +109,18 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFECE5DD),
+      backgroundColor: WHITE_COLOR,
       appBar: AppBar(
         title: Text(person.personName),
         centerTitle: false,
+        backgroundColor: PALE_ORANGE,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.call),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: Icon(Icons.video_call),
             onPressed: () {},
           ),
         ],
@@ -128,6 +130,7 @@ class ChatScreen extends StatelessWidget {
           Flexible(
             child: ListView.builder(
               itemCount: messages.length,
+              physics: BouncingScrollPhysics(),
               itemBuilder: (ctx, i) => renderChatMessage(messages[i]),
             ),
           ),
