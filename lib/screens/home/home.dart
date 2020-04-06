@@ -12,6 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
+import 'package:e_doctor/screens/users/users.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -61,9 +63,10 @@ class HomePage extends StatelessWidget {
           child: Icon(
             Icons.chat
           ),
-          onPressed: () async {
-            // final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-          },
+          onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserListScreen()));
+            },
           backgroundColor: PALE_ORANGE,
         ),
       ),

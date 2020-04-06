@@ -153,29 +153,34 @@ class _AuthViewsState extends State<AuthViews> {
     return Mutation(
       builder: (RunMutation run, QueryResult result) => gradientButtonComponent(run, result),
       options: MutationOptions(
-        documentNode: widget.signup ? gql(signupMutation) : gql(signinMutation),
-        update: (Cache cache, QueryResult result) => cache,
-          onCompleted: (dynamic result) async {
-          final response = AuthModel.fromJson(
-            result[widget.signup ? 'register' : 'login'],
-          );
+      documentNode: gql(signupMutation),
+      update: (Cache cache, QueryResult result) => cache,
+      onCompleted: (dynamic result) async {
+          print("----printing----result");
+          print(result);
 
-          if (response.error == null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString("uid", response.id);
-            await prefs.setString("token", response.token);
+        final response = AuthModel.fromJson(
+          result['signup'],
+        );
 
-            appState.setToken(response.token);
-          }
-          if (response.error != null) {
-            setState(() {
-              errorText = response.error.message ?? "";
-            });
-          }
-        },
-      ),
-    );
-  }
+        if (response.error == null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("uid", response.id);
+          await prefs.setString("token", response.token);
+
+          appState.setToken(response.token);
+          print("----printing----token");
+          print(response.token);
+        }
+        if (response.error != null) {
+          setState(() {
+            errorText = response.error.message ?? "";
+          });
+        }
+      },
+    ),
+  );
+}
 
   Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
     return GestureDetector(
@@ -186,9 +191,7 @@ class _AuthViewsState extends State<AuthViews> {
           if(widget.signup) {
             _handleSignUp().then((FirebaseUser user) => {
                 runMutation({
-                  "email": email,
-                  "password": pass,
-                  "fcmToken": user.uid
+                  "username": email,
                 }),
                 Navigator.pushReplacement(
                   context,
@@ -201,9 +204,7 @@ class _AuthViewsState extends State<AuthViews> {
           } else {
               _handleSignIn().then((FirebaseUser user) => {
                 runMutation({
-                  "email": email,
-                  "password": pass,
-                  "fcmToken": user.uid
+                  "username": email,
                 }),
                 Navigator.pushReplacement(
                   context,

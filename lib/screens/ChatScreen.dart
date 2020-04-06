@@ -1,8 +1,11 @@
 import 'package:e_doctor/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:e_doctor/config/config.dart';
+
 import 'package:e_doctor/models/ChatListItem.dart';
 import 'package:e_doctor/models/ChatMessage.dart';
+
+import 'package:e_doctor/screens/VideoScreen.dart';
 
 class ChatScreen extends StatelessWidget {
   final ChatListItem person;
@@ -11,23 +14,11 @@ class ChatScreen extends StatelessWidget {
 
   final List<ChatMessage> messages = [
     ChatMessage(
-        date: "9:10 am", isSentByMe: true, message: "Bike Customer CFP Franc"),
+        date: "9:10 am", isSentByMe: false, message: "Bike Customer CFP Franc"),
     ChatMessage(
         date: "9:10 am",
         isSentByMe: true,
         message: "instruction set grey applications"),
-    ChatMessage(date: "9:10 am", isSentByMe: false, message: "Monitored"),
-    ChatMessage(date: "9:10 am", isSentByMe: true, message: "local"),
-    ChatMessage(date: "9:10 am", isSentByMe: false, message: "Functionality"),
-    ChatMessage(
-        date: "9:10 am", isSentByMe: true, message: "Bike Customer CFP Franc"),
-    ChatMessage(date: "9:10 am", isSentByMe: true, message: "local"),
-    ChatMessage(date: "9:10 am", isSentByMe: false, message: "Functionality"),
-    ChatMessage(
-        date: "9:10 am",
-        isSentByMe: true,
-        message: "instruction set grey applications"),
-    ChatMessage(date: "9:10 am", isSentByMe: false, message: "Monitored"),
   ];
 
   Widget renderChatMessage(ChatMessage message) {
@@ -47,7 +38,7 @@ class ChatScreen extends StatelessWidget {
             // ),
             margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: message.isSentByMe ? PURPLE_COLOR : Colors.grey[200],
+              color: message.isSentByMe ? PALE_ORANGE : Colors.grey[200],
               boxShadow: [
                 BoxShadow(
                   blurRadius: 2,
@@ -111,17 +102,31 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: WHITE_COLOR,
       appBar: AppBar(
-        title: Text(person.personName),
+        title: Text('title'),
         centerTitle: false,
         backgroundColor: PALE_ORANGE,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.call),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => VideoScreen(),
+                ),
+              );
+            },
           ),
           IconButton(
             icon: Icon(Icons.video_call),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => VideoScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
