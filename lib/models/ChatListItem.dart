@@ -1,15 +1,26 @@
+class ChatList {
+  final List<ChatListItem> chats;
+
+  ChatList({this.chats});
+
+  factory ChatList.fromJson(List<dynamic> json) {
+    var chats = json.map((chatItem) => ChatListItem.fromJson(chatItem)).toList();
+    return ChatList(chats: chats);
+  }
+
+  get length => chats.length;
+}
+
 class ChatListItem {
+  final String id, name, participants;
+  ChatListItem({this.id, this.name, this.participants});
 
-  final String profileURL;
-  final String personName;
-  final String lastMessage;
-  final String date;
-
-  ChatListItem({
-    this.profileURL,
-    this.personName,
-    this.lastMessage,
-    this.date
-  });
-
+  factory ChatListItem.fromJson(dynamic json) {
+    return ChatListItem(
+      id: json['id'].toString(),
+      // email: json['email'].toString(),
+      name: json['name'],
+      participants: json['participants'],
+    );
+  }
 }
