@@ -12,15 +12,28 @@ dependencies:
 
   cupertino_icons: ^0.1.2
   story_view: ^0.11.2
+  # core firebase library
+  firebase_core: 0.4.4+3
+  # authentication with email and name etc
   firebase_auth: ^0.15.5+3
   # Wraps NSUserDefaults (on iOS) and SharedPreferences (on Android),
   shared_preferences: ^0.5.6+3
   # Keychain for ios aes secret for android with keyStore
   flutter_secure_storage: ^3.3.1+1
-  # firebase auth
+  # firebase FCM
   firebase_messaging: ^6.0.13
   # lazy load + increased scalability for classes with a listening mecanism that grows exponentially in complexity
   provider: 4.1.0-dev+2
+  # db for sync
+  cloud_firestore: 0.13.4+2
+  # video call
+  # flutter_webrtc: 0.2.7
+  # graphql 
+  graphql_flutter: 3.1.0-beta.1
+
+  build_runner: ^1.5.2
+  json_serializable: ^3.2.0
+  json_annotation: ^3.0.0
 
 
 dev_dependencies:
@@ -28,9 +41,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
 
 
-  assets:
-    - assets/
+  # assets:
+  #   - assets/
