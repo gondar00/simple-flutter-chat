@@ -13,14 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var token = prefs.getString('token');
-  HttpLink httpLink = HttpLink(uri: 'https://chapserver.herokuapp.com/');
+  HttpLink httpLink = HttpLink(uri: 'https://infinite-plateau-74257.herokuapp.com');
 
   final AuthLink authLink = AuthLink(
-    getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-    // OR
-    // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+    getToken: () => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjazhtdWhpbjc4bTM2MGE4NzV0djMzYnJwIiwiaWF0IjoxNTg2MDc5MDEwfQ._-hMf0VE6tkQV1tR-vU4EBRM4OQPs18IP54e3KlVy_w',
   );
 
   final Link link = authLink.concat(httpLink);
@@ -80,7 +79,7 @@ class AuthPage extends StatelessWidget {
     );
 
     _firebaseMessaging.requestNotificationPermissions(
-        const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: true)
+      const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: true)
     );
 
     _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
