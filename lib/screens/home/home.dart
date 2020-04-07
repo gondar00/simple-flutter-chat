@@ -1,20 +1,36 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:e_doctor/tabs/CallsTab.dart';
 import 'package:e_doctor/tabs/ChatsTab.dart';
 
 import 'package:e_doctor/constants/colors.dart';
-// import 'package:e_doctor/constants/gradients.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-import 'package:e_doctor/screens/users/users.dart';
+class _HomePageState extends State<HomePage> {
+  final Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
+  Color color;
 
-class HomePage extends StatelessWidget {
+  Future<void> getData() async {
+    print('called');
+    final SharedPreferences prefs = await _sprefs;
+    Color color = prefs.getString('user-type') == 'patient' ? LIGHT_GREEN : PALE_ORANGE;
+    setState(() {
+      color = color;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -24,51 +40,52 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "E-Doctor",
+            'E-Doctor',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           centerTitle: false,
-          backgroundColor: PALE_ORANGE,
-          bottom: TabBar(
-            indicatorColor: LIGHT_GREY_COLOR,
-            tabs: <Widget>[
-              Tab(
-                text: "CHATS",
-              ),
-              Tab(
-                text: "CALLS",
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert),
-            ),
-          ],
+          backgroundColor: color,
+          // bottom: TabBar(
+          //   indicatorColor: LIGHT_GREY_COLOR,
+          //   tabs: <Widget>[
+          //     Tab(
+          //       text: 'CHATS',
+          //     ),
+          //     Tab(
+          //       text: 'CALLS',
+          //     ),
+          //   ],
+          // ),
+          // actions: <Widget>[
+          //   IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(Icons.search),
+          //   ),
+          //   IconButton(
+          //     onPressed: () {},
+          //     icon: Icon(Icons.more_vert),
+          //   ),
+          // ],
         ),
-        body: TabBarView(
-          children: <Widget>[
-            ChatsTab(),
-            CallsTab(),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.chat
-          ),
-          onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserListScreen()));
-            },
-          backgroundColor: PALE_ORANGE,
-        ),
+        body: ChatsTab(),
+        // body: TabBarView(
+        //   children: <Widget>[
+        //     ChatsTab(),
+        //     CallsTab(),
+        //   ],
+        // ),
+        // floatingActionButton: FloatingActionButton(
+        //   child: Icon(
+        //     Icons.chat
+        //   ),
+        //   onPressed: () {
+        //       Navigator.push(context,
+        //           MaterialPageRoute(builder: (context) => UserListScreen()));
+        //     },
+        //   backgroundColor: PALE_ORANGE,
+        // ),
       ),
     );
   }

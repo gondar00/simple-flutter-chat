@@ -197,7 +197,7 @@ class _VideoScreen extends State<VideoScreen> {
     VideoSession session = VideoSession(uid, view);
     _sessions.add(session);
     print("-----printing----sessions");
-    print(sessions);
+    // print(sessions);
   }
 
   void _togglePublisherVideo() async {

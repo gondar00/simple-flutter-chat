@@ -3,7 +3,7 @@ import 'package:e_doctor/constants/gradients.dart';
 
 import 'package:e_doctor/state/app_state.dart';
 import 'package:e_doctor/screens/home/home.dart';
-import 'package:e_doctor/screens/ChatScreen.dart';
+// import 'package:e_doctor/screens/ChatScreen.dart';
 
 import 'package:e_doctor/screens/auth/auth_gql.dart';
 import 'package:e_doctor/screens/auth/model.dart';
@@ -23,26 +23,29 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthViews extends StatefulWidget {
-  final bool signup;
+  AuthViews({this.signup = false, this.userType = 'doctor'});
 
-  AuthViews({this.signup = false});
+  final bool signup;
+  final String userType;
+
+  @override
   _AuthViewsState createState() => _AuthViewsState();
 }
 
 class _AuthViewsState extends State<AuthViews> {
   Map<String, String> inputValues = {};
   Map<String, bool> boolValues = {};
-  String errorText = "";
+  String errorText = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<FirebaseUser> _handleSignIn() async {
     final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
-      email: inputValues["email"],
-      password: inputValues["password"],
+      email: inputValues['email'],
+      password: inputValues['password'],
     )).user;
 
     return user;
@@ -50,8 +53,8 @@ class _AuthViewsState extends State<AuthViews> {
 
   Future<FirebaseUser> _handleSignUp() async {
     final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
-      email: inputValues["email"],
-      password: inputValues["password"],
+      email: inputValues['email'],
+      password: inputValues['password'],
     )).user;
 
     return user;
@@ -60,23 +63,23 @@ class _AuthViewsState extends State<AuthViews> {
   @override
   Widget build(BuildContext context) => body(context);
 
-  Widget body(context) {
+  Widget body(BuildContext context) {
     return ListView(
       children: <Widget>[
         Container(margin: EdgeInsets.only(top: 60)),
         gradientTextComponent(
-          widget.signup ? ORANGE_GRADIENT : BLUE_GRADIENT,
-          "Welcome",
+          widget.userType == 'doctor' ? ORANGE_GRADIENT : GREEN_GRADIENT,
+          'Welcome',
         ),
         // Container(margin: EdgeInsets.only(top: 35)),
         // messageTextComponent(),
         Container(margin: EdgeInsets.only(top: 35)),
         // if (widget.signup) ...nameInputComponent(),
-        textFieldComponent(type: "email", hintText: "Email Address"),
+        textFieldComponent(type: 'email', hintText: 'Email Address'),
         Container(margin: EdgeInsets.only(top: 20)),
         textFieldComponent(
-          type: "password",
-          hintText: "Password",
+          type: 'password',
+          hintText: 'Password',
           obscure: true,
         ),
         Container(margin: EdgeInsets.only(top: 10)),
@@ -90,7 +93,7 @@ class _AuthViewsState extends State<AuthViews> {
 
   List<Widget> nameInputComponent() {
     return [
-      textFieldComponent(type: "name", hintText: "Display Name"),
+      textFieldComponent(type: 'name', hintText: 'Display Name'),
       Container(margin: EdgeInsets.only(top: 20)),
     ];
   }
@@ -119,10 +122,10 @@ class _AuthViewsState extends State<AuthViews> {
       child: Center(
         child: TextField(
           obscureText: obscure,
-          onChanged: (value) => setInputValue(type, value),
+          onChanged: (String value) => setInputValue(type, value),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: hintText ?? "",
+            hintText: hintText ?? '',
           ),
         ),
       ),
@@ -133,22 +136,22 @@ class _AuthViewsState extends State<AuthViews> {
     setState(() {
       inputValues[type] = value;
     });
-    // if (errorText != "")
+    // if (errorText != '')
     //   setState(() {
-    //     errorText = "";
+    //     errorText = '';
     //   });
   }
 
   Widget errorMessageComponent() {
     return Text(
-      "$errorText",
+      errorText,
       textAlign: TextAlign.center,
       style: TextStyle(color: Colors.red),
     );
   }
 
-  Widget mutationComponent(context) {
-    final appState = Provider.of<AppState>(context);
+  Widget mutationComponent(BuildContext context) {
+    final AppState appState = Provider.of<AppState>(context);
 
     return Mutation(
       builder: (RunMutation run, QueryResult result) => gradientButtonComponent(run, result),
@@ -156,25 +159,26 @@ class _AuthViewsState extends State<AuthViews> {
       documentNode: gql(signupMutation),
       update: (Cache cache, QueryResult result) => cache,
       onCompleted: (dynamic result) async {
-          print("----printing----result");
-          print(result);
+        // print('----printing----result');
+        // print(result);
 
-        final response = AuthModel.fromJson(
+        final AuthModel response = AuthModel.fromJson(
           result['signup'],
         );
 
         if (response.error == null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("uid", response.id);
-          await prefs.setString("token", response.token);
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('uid', response.id);
+          await prefs.setString('token', response.token);
+          await prefs.setString('user-type', widget.userType);
 
           appState.setToken(response.token);
-          print("----printing----token");
+          print('----printing----token');
           print(response.token);
         }
         if (response.error != null) {
           setState(() {
-            errorText = response.error.message ?? "";
+            errorText = response.error.message ?? '';
           });
         }
       },
@@ -185,35 +189,43 @@ class _AuthViewsState extends State<AuthViews> {
   Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
     return GestureDetector(
       onTap: () {
-        String email = inputValues["email"].trim() ?? "";
-        String pass = inputValues["password"].trim() ?? "";
-        if (email != "" && pass != "") {
+        final String email = inputValues['email'] ?? '';
+        final String pass = inputValues['password'] ?? '';
+        if (email != '' && pass != '') {
           if(widget.signup) {
             _handleSignUp().then((FirebaseUser user) => {
                 runMutation({
-                  "username": email,
+                  'username': email,
                 }),
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (BuildContext context) => HomePage(),
                   ),
                 )
             })
-            .catchError((e) => print(e));  
+            .catchError((ArgumentError e) => 
+              setState(() {
+                errorText = e.name;
+              })
+            );  
           } else {
               _handleSignIn().then((FirebaseUser user) => {
                 runMutation({
-                  "username": email,
+                  'username': email,
                 }),
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (BuildContext context) => HomePage(),
                   ),
                 )
             })
-            .catchError((e) => print(e));  
+            .catchError((ArgumentError e) => 
+              setState(() {
+                errorText = e.name;
+              })
+            ); 
           }
         }
       },
@@ -222,21 +234,22 @@ class _AuthViewsState extends State<AuthViews> {
         width: double.infinity,
         height: 50,
         decoration: BoxDecoration(
-          gradient: widget.signup ? ORANGE_GRADIENT : BLUE_GRADIENT,
+          gradient: widget.userType == 'doctor' ? ORANGE_GRADIENT : GREEN_GRADIENT,
           borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
               blurRadius: 24,
-              color: widget.signup ? ORANGE_SHADOW : BLUE_SHADOW,
+              color: widget.userType == 'doctor' ? ORANGE_SHADOW : GREEN_SHADOW,
               offset: Offset(0, 16),
             )
           ],
         ),
         child: Center(
-          child: Text(
-            "CONTINUE",
+          child: result.loading
+              ? CupertinoActivityIndicator() : Text(
+            'CONTINUE',
             style: TextStyle(
-              color: widget.signup ? WHITE_COLOR : WHITE_COLOR,
+              color: WHITE_COLOR,
               fontSize: 18,
               fontFamily: 'Roboto',
             ),

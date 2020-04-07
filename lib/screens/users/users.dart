@@ -196,20 +196,17 @@ class _UserListScreenState extends State<UserListScreen> {
         pollInterval: 100,
       ),
       builder: (QueryResult result, { VoidCallback refetch, FetchMore fetchMore }) {
+        if(result.loading) return CupertinoActivityIndicator();
         if (result.data != null && !result.loading) {
-          print("----printing----result");
           print("----printing----result.data");
-          print(result);
           print(result.data);
 
-          List<dynamic> userData = result.data['users'];
+          List<dynamic> userData = result.data['users'] as List<dynamic>;
           users = UsersModel.fromJson(userData);
           return userListComponent(users);
         }
-        /*TODO: fix exception being thrown*/
-        // print("----printing----users---errror");
-        // print(result.exception);
-        return userListComponent(users);
+
+        return Container();
       },
     );
   }

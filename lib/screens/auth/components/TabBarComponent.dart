@@ -2,15 +2,16 @@ import 'package:e_doctor/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class TabBarComponent extends StatelessWidget {
+  TabBarComponent({@required this.tabs, @required this.tabViews, this.labelColor = PALE_ORANGE});
+
+  final Color labelColor;
   final List<String> tabs;
   final List<Widget> tabViews;
-
-  TabBarComponent({@required this.tabs, @required this.tabViews});
 
   @override
   Widget build(BuildContext context) => body(context);
 
-  Widget body(context) {
+  Widget body(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -46,9 +47,9 @@ class TabBarComponent extends StatelessWidget {
 
   Widget tabBarComponent() {
     return TabBar(
-      labelColor: Color(0xFFFF8652),
+      labelColor: labelColor,
       unselectedLabelColor: Color(0xFFB6B6B6),
-      indicator: CustomTabIndicator(),
+      indicator: CustomTabIndicator(labelColor: labelColor),
       labelStyle: TextStyle(
           fontSize: 18, fontFamily: 'Roboto', fontWeight: FontWeight.w500),
       tabs: tabs.map((tab) => Tab(text: tab)).toList(),
@@ -65,15 +66,20 @@ class TabBarComponent extends StatelessWidget {
 
 /* ---------------------CUSTOM_PAINTER------------------------ */
 class CustomTabIndicator extends Decoration {
+  CustomTabIndicator({this.labelColor});
+
+  final Color labelColor;
+
   @override
   _CustomPainter createBoxPainter([VoidCallback onChanged]) =>
-      _CustomPainter(this, onChanged);
+      _CustomPainter(this, onChanged, labelColor);
 }
 
 class _CustomPainter extends BoxPainter {
   final CustomTabIndicator decoration;
+  final Color labelColor;
 
-  _CustomPainter(this.decoration, VoidCallback onChanged)
+  _CustomPainter(this.decoration, VoidCallback onChanged, this.labelColor)
       : assert(decoration != null),
         super(onChanged);
 
@@ -85,7 +91,7 @@ class _CustomPainter extends BoxPainter {
     final Rect rect = Rect.fromLTWH(
         configuration.size.width / 2 + offset.dx - 35, offset.dy + 65, 75, 5);
     final Paint paint = Paint();
-    paint.color = Color(0xFFFF8652);
+    paint.color = labelColor;
     paint.style = PaintingStyle.fill;
     canvas.drawRRect(
       RRect.fromRectAndCorners(
