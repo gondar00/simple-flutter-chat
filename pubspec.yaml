@@ -34,6 +34,8 @@ dependencies:
   build_runner: ^1.5.2
   json_serializable: ^3.2.0
   json_annotation: ^3.0.0
+  jiffy: ^3.0.1
+
 
 
 dev_dependencies:
@@ -43,6 +45,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-
-  # assets:
-  #   - assets/
+  assets:
+    - assets/images/welcome-illustration-1.png
+    - assets/images/welcome-illustration-2.png
