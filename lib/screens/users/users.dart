@@ -10,6 +10,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class UserListScreen extends StatefulWidget {
+  UserListScreen({this.covid = false});
+  final bool covid;
   @override
   _UserListScreenState createState() => _UserListScreenState();
 }
@@ -38,7 +40,7 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Widget headerContainerComponent() {
-    final group = selectionList.length > 1;
+    final group = selectionList.length > 0;
     return Container(
       padding: EdgeInsets.only(left: 25, right: 25),
       decoration: BoxDecoration(
@@ -58,13 +60,13 @@ class _UserListScreenState extends State<UserListScreen> {
           Container(margin: EdgeInsets.only(top: 40)),
           gradientTextComponent(
             ORANGE_GRADIENT,
-            "Add a new chat",
+            'Chat with a doctor/nutritionist',
             size: 24,
             weight: FontWeight.w500,
           ),
           Container(margin: EdgeInsets.only(top: 10)),
           Text(
-            "Select multiple people for group chat",
+            'Please write the reason for this check-up & report if you suffer from any of COVID-19 symptoms',
             style: TextStyle(
               fontFamily: 'Roboto',
               color: Colors.grey,
@@ -99,7 +101,7 @@ class _UserListScreenState extends State<UserListScreen> {
           style: TextStyle(color: BLACK_COLOR),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "Group name",
+            hintText: 'Example(Fever/Cough/Headache...)',
             hintStyle: TextStyle(color: Colors.grey),
           ),
           onChanged: (val) {

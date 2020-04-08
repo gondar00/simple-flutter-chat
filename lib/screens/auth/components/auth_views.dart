@@ -2,7 +2,7 @@ import 'package:e_doctor/constants/colors.dart';
 import 'package:e_doctor/constants/gradients.dart';
 
 import 'package:e_doctor/state/app_state.dart';
-import 'package:e_doctor/screens/home/home.dart';
+import 'package:e_doctor/screens/HomeScreen.dart';
 // import 'package:e_doctor/screens/ChatScreen.dart';
 
 import 'package:e_doctor/screens/auth/auth_gql.dart';
@@ -186,40 +186,40 @@ class _AuthViewsState extends State<AuthViews> {
   );
 }
 
-  Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
-    return GestureDetector(
-      onTap: () {
-        final String email = inputValues['email'] ?? '';
-        final String pass = inputValues['password'] ?? '';
-        if (email != '' && pass != '') {
-          if(widget.signup) {
-            _handleSignUp().then((FirebaseUser user) => {
-                runMutation({
-                  'username': email,
-                }),
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage(),
-                  ),
-                )
+Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
+  return GestureDetector(
+    onTap: () {
+      final String email = inputValues['email'] ?? '';
+      final String pass = inputValues['password'] ?? '';
+      if (email != '' && pass != '') {
+        if(widget.signup) {
+          _handleSignUp().then((FirebaseUser user) => {
+            runMutation({
+              'username': email,
+            }),
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => HomeScreen(userType: widget.userType),
+              ),
+            )
+          })
+          .catchError((ArgumentError e) => 
+            setState(() {
+              errorText = e.name;
             })
-            .catchError((ArgumentError e) => 
-              setState(() {
-                errorText = e.name;
-              })
-            );  
-          } else {
-              _handleSignIn().then((FirebaseUser user) => {
-                runMutation({
-                  'username': email,
-                }),
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage(),
-                  ),
-                )
+          );  
+        } else {
+            _handleSignIn().then((FirebaseUser user) => {
+              runMutation({
+                'username': email,
+              }),
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomeScreen(userType: widget.userType),
+                ),
+              )
             })
             .catchError((ArgumentError e) => 
               setState(() {
@@ -234,12 +234,12 @@ class _AuthViewsState extends State<AuthViews> {
         width: double.infinity,
         height: 50,
         decoration: BoxDecoration(
-          gradient: widget.userType == 'doctor' ? ORANGE_GRADIENT : GREEN_GRADIENT,
+          gradient: widget.userType == 'patient' ? GREEN_GRADIENT : ORANGE_GRADIENT,
           borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
               blurRadius: 24,
-              color: widget.userType == 'doctor' ? ORANGE_SHADOW : GREEN_SHADOW,
+              color: widget.userType == 'patient' ? GREEN_SHADOW : ORANGE_SHADOW,
               offset: Offset(0, 16),
             )
           ],

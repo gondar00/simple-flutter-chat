@@ -8,7 +8,7 @@ class ChatList {
     return ChatList(chats: chats);
   }
 
-  get length => chats.length;
+  int get length => chats.length;
 }
 
 class ChatListItem {

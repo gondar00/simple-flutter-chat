@@ -101,57 +101,57 @@ static List<Example> items = [
     return Container(
         alignment: Alignment.bottomCenter,
         padding: const EdgeInsets.symmetric(vertical: 120.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RawMaterialButton(
-              onPressed: () => {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AuthScreen(),
+        child: ButtonBar(
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: () => {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AuthScreen(),
+                    ),
+                  )
+                },
+                child: Text(
+                  'Doctor',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontSize: 16.0,
+                    height: 1.5
                   ),
-                )
-              },
-              child: Text(
-                'Doctor',
-                style: TextStyle(
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                  fontSize: 16.0,
-                  height: 1.5
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
+                elevation: 2.0,
+                fillColor: PALE_ORANGE,
+                padding: const EdgeInsets.all(18.0),
               ),
-              elevation: 2.0,
-              fillColor: PALE_ORANGE,
-              padding: const EdgeInsets.all(18.0),
-            ),
-            RawMaterialButton(
-              onPressed: () => {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => AuthScreen(userType: 'patient'),
+              RawMaterialButton(
+                onPressed: () => {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AuthScreen(userType: 'patient'),
+                    ),
+                  )
+                },
+                child: Text(
+                  'Patient',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontSize: 16.0,
+                    height: 1.5
                   ),
-                )
-              },
-              child: Text(
-                'Patient',
-                style: TextStyle(
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                  fontSize: 16.0,
-                  height: 1.5
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
+                elevation: 2.0,
+                fillColor: DARK_GREEN,
+                padding: const EdgeInsets.all(18.0),
               ),
-              elevation: 2.0,
-              fillColor: DARK_GREEN,
-              padding: const EdgeInsets.all(18.0),
-            ),
-          ],
-        ));
+            ],
+          )
+      );
   }
 
   @override

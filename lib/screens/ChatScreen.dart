@@ -1,66 +1,45 @@
 import 'package:e_doctor/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-import 'package:e_doctor/models/ChatListItem.dart';
 import 'package:e_doctor/models/ChatMessage.dart';
 
-import 'package:flutter/services.dart';
+class ChatScreen extends StatelessWidget {
+  ChatScreen({this.userType, this.title = 'Conversation between 2', this.texts});
 
-import 'package:shared_preferences/shared_preferences.dart';
+  // invoke native method
+  // static const MethodChannel platform = MethodChannel('com.video.sdk/opentok');
 
-class ChatScreen extends StatefulWidget {
-  ChatScreen({this.person});
+  final String userType;
+  final String title;
+  final List<Message> texts;
 
-  static const MethodChannel platform = MethodChannel('com.video.sdk/opentok');
+  // final appState = Provider.of<AppState>(ChatScreen);
+  // print("----printing----uuu");
+  // print(appState.token);
 
-  final ChatListItem person;
+  // final List<ChatMessage> messages = [
+  //   ChatMessage(
+  //       date: "9:10 am", isSentByMe: false, message: "Bike Customer CFP Franc"),
+  //   ChatMessage(
+  //       date: "9:10 am",
+  //       isSentByMe: true,
+  //       message: "instruction set grey applications"),
+  // ];
 
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
+  // void _openVideoCallPlatformScreen() async {
+  //   try {
+  //     await platform.invokeMethod<dynamic>('openVideoChat');
+  //   } on PlatformException catch (_) {
+  //   }
+  // }
 
-class _ChatScreenState extends State<ChatScreen> {
-  final Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
-  Color color;
-
-  Future<void> getData() async {
-    final SharedPreferences prefs = await _sprefs;
-    print('print------');
-    print(prefs.getString('user-type') == 'patient');
-    Color color = prefs.getString('user-type') == 'patient' ? LIGHT_GREEN : PALE_ORANGE;
-    setState(() {
-      color = color;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  final List<ChatMessage> messages = [
-    ChatMessage(
-        date: "9:10 am", isSentByMe: false, message: "Message not from me"),
-    ChatMessage(
-        date: "9:10 am",
-        isSentByMe: true,
-        message: "Message from me"),
-  ];
-
-  void _openVideoCallPlatformScreen() async {
-    try {
-      await ChatScreen.platform.invokeMethod<dynamic>('openVideoChat');
-    } on PlatformException catch (_) {
-    }
-  }
-
-  Widget renderChatMessage(ChatMessage message) {
+  Widget renderChatMessage(Message message, bool patient) {
+    if(message.text == null) return Container();
     return Column(
       children: <Widget>[
         Align(
-          alignment:
-              message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+          // TODO(patient): fix display based on token
+          alignment: patient ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
@@ -72,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
             // ),
             margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: message.isSentByMe ? color : Colors.grey[200],
+              color: patient ? DARK_GREEN : PALE_ORANGE,
               boxShadow: [
                 BoxShadow(
                   blurRadius: 2,
@@ -83,10 +62,10 @@ class _ChatScreenState extends State<ChatScreen> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              message.message,
+              message.text,
               style: TextStyle(
                 fontSize: 16,
-                color: message.isSentByMe ? WHITE_COLOR : Colors.black,
+                color: WHITE_COLOR,
               ),
             ),
           ),
@@ -122,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           FloatingActionButton(
             mini: true,
-            backgroundColor: LIGHT_GREEN,
+            backgroundColor: userType == 'patient' ? DARK_GREEN : PALE_ORANGE,
             onPressed: (){},
             child: Icon(Icons.send,),
           ),
@@ -136,21 +115,19 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: WHITE_COLOR,
       appBar: AppBar(
-        title: Text('title'),
+        title: Text(title),
         centerTitle: false,
-        backgroundColor: color,
+        backgroundColor: userType == 'patient' ? DARK_GREEN : PALE_ORANGE,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.call),
             onPressed: () {
-              _openVideoCallPlatformScreen();
+              // _openVideoCallPlatformScreen();
             },
           ),
           IconButton(
             icon: Icon(Icons.video_call),
             onPressed: () {
-              print('print------');
-              print(color);
               // _openVideoCallPlatformScreen();
             },
           ),
@@ -160,9 +137,9 @@ class _ChatScreenState extends State<ChatScreen> {
         children: <Widget>[
           Flexible(
             child: ListView.builder(
-              itemCount: messages.length,
+              itemCount: texts.length,
               physics: BouncingScrollPhysics(),
-              itemBuilder: (BuildContext ctx, int i) => renderChatMessage(messages[i]),
+              itemBuilder: (BuildContext ctx, int i) => renderChatMessage(texts[i], userType == 'patient'),
             ),
           ),
           Divider(),

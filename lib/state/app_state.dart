@@ -8,18 +8,19 @@ class AppState extends ChangeNotifier {
   }
 
   Future findTheme() async {
-    final pref = await SharedPreferences.getInstance();
-    final dark = pref.getBool("dark") ?? false;
-    final tokenP = pref.getString('token') ?? "";
-    if (tokenP != "") _token = tokenP;
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    final bool dark = pref.getBool('dark') ?? false;
+    final String tokenP = pref.getString('token') ?? '';
+    if (tokenP != '') 
+      _token = tokenP;
     if (dark)
       setDark();
     else
       setLight();
   }
 
-  String _token = "";
-  ThemeData currentTheme = ThemeData(fontFamily: "Rubik");
+  String _token = '';
+  ThemeData currentTheme = ThemeData(fontFamily: 'Rubik');
 
   void setToken(String val) {
     _token = val;

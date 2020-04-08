@@ -1,11 +1,45 @@
+import 'dart:core';
+import 'package:jiffy/jiffy.dart';
+
 import 'package:flutter/material.dart';
 import 'package:e_doctor/models/ChatListItem.dart';
 import 'package:e_doctor/screens/ChatScreen.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:e_doctor/tabs/chats_gql.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'package:e_doctor/models/ChatMessage.dart';
+
+
+class ConversationList {
+  ConversationList({this.conversations});
+
+  factory ConversationList.fromJson(List<dynamic> json) {
+    final List<Conversation> conversations = json.map((dynamic convo) => Conversation.fromJson(convo)).toList();
+    return ConversationList(conversations: conversations);
+  }
+
+  final List<Conversation> conversations;
+
+  int get length => conversations.length;
+}
+
+class ErrorModel {
+  final String path;
+  final String message;
+
+  ErrorModel({this.path, this.message});
+
+  factory ErrorModel.fromJson(Map<String, dynamic> json) {
+    return ErrorModel(path: json['path'], message: json['message']);
+  }
+}
 
 class ChatsTab extends StatelessWidget {
+  ChatsTab({this.userType});
+  final String userType;
+
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -14,41 +48,47 @@ class ChatsTab extends StatelessWidget {
         pollInterval: 100,
       ),
       builder: (QueryResult result, { VoidCallback refetch, FetchMore fetchMore }) {
-        print("-----printing------chats");
-        // print(result);
-        var me = result.data['me']['conversations'];
-        // var chats = ChatList.fromJson(me);
-        print(me);
+        if(result.loading || result.data == null) 
+          return const CupertinoActivityIndicator();
+        if(result.data == null && !result.loading) 
+          return Container();
+
+        final List<dynamic> json = result.data['me']['conversations'] as List<dynamic>;
+        final List<Conversation> conversations = json.map((dynamic convo) => Conversation.fromJson(convo)).toList();
+        print('-----printing------conversations');
+        print(conversations);
 
         return ListView.separated(
-              itemCount: me.length,
-              separatorBuilder: (ctx, i) {
-                return Divider();
-              },
-              itemBuilder: (ctx, i) {
-                return ListTile(
-                  title: Text('name'),
-                  subtitle: Text('last message'),
-                  trailing: Text('date'),
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: NetworkImage(
-                      "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+          itemCount: conversations.length,
+          separatorBuilder: (BuildContext ctx, int i) {
+            return const Divider();
+          },
+          itemBuilder: (BuildContext ctx, int i) {
+            return ListTile(
+              title: Text(conversations[i].name),
+              subtitle: Text(Jiffy(conversations[i].updatedAt).fromNow()),
+              trailing: Text(Jiffy(conversations[i].createdAt).fromNow()),
+              leading: CircleAvatar(
+                backgroundColor: Colors.red,
+                child: const Text(
+                  'E'
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ChatScreen(
+                      userType: userType,
+                      title: conversations[i].name,
+                      texts: conversations[i].texts.map((dynamic message) => Message.fromJson(message)).toList()
                     ),
                   ),
-                  onTap: () {
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => ChatScreen(
-                          person: ChatListItem(name: 'gandharv'), 
-                        ),
-                      ),
-                    );
-                  },
                 );
               },
             );
+          },
+        );
       });
   }
 }
