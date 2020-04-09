@@ -12,6 +12,7 @@ String getChatsQuery = """
         texts {
           id
           createdAt
+          text
           author {
             id
             username

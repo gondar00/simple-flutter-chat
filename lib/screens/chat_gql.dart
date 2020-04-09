@@ -1,24 +1,68 @@
-String getChatsQuery = """
-  query me {
-    me {
-      conversations {
+// String getChatsQuery = '''
+//   query me {
+//     me {
+//       conversations {
+//         id
+//         name
+//         createdAt
+//         updatedAt
+//         participants {
+//           username
+//         }
+//         texts {
+//           id
+//           text
+//           createdAt
+//           author {
+//             id
+//             username
+//           }
+//         }
+//       }
+//     }
+//   }
+// ''';
+
+
+String sendTextMessageMutation = '''
+  mutation sendTextMessage(\$conversationId: ID!, \$text: String!) {
+    sendTextMessage(conversationId: \$conversationId, text: \$text) {
+      id
+      text
+    }
+  }
+''';
+
+String subscriptionNewText = '''
+  subscription onTextAdded {
+    text {
+      mutation
+      node {
         id
-        name
+        text
         createdAt
-        updatedAt
-        participants {
+        author {
+          id
           username
         }
-        texts {
+        conversation {
           id
-          text
-          createdAt
-          author {
+          name
+          participants {
             id
             username
+          }
+          texts {
+            id
+            text
+            createdAt
+            author {
+              id
+              username
+            }
           }
         }
       }
     }
   }
-""";
+''';

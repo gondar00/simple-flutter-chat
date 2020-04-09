@@ -1,15 +1,11 @@
 name: e_doctor
 description: An e doctor application
-
 version: 1.0.0+1
-
 environment:
   sdk: ">=2.6.0 <3.0.0"
-
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^0.1.2
   story_view: ^0.11.2
   # core firebase library
@@ -26,25 +22,23 @@ dependencies:
   provider: 4.1.0-dev+2
   # db for sync
   cloud_firestore: 0.13.4+2
+  firebase_storage: ^3.1.5
   # video call
   # flutter_webrtc: 0.2.7
   # graphql 
   graphql_flutter: 3.1.0-beta.1
-
   build_runner: ^1.5.2
   json_serializable: ^3.2.0
   json_annotation: ^3.0.0
+  # Used for momentjs like date stuff
   jiffy: ^3.0.1
-
-
-
+  # image picker
+  image_picker: ^0.6.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 flutter:
   uses-material-design: true
-
   assets:
     - assets/images/welcome-illustration-1.png
     - assets/images/welcome-illustration-2.png

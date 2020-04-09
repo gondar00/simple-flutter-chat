@@ -2,7 +2,6 @@ import 'dart:core';
 import 'package:jiffy/jiffy.dart';
 
 import 'package:flutter/material.dart';
-import 'package:e_doctor/models/ChatListItem.dart';
 import 'package:e_doctor/screens/ChatScreen.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -79,6 +78,7 @@ class ChatsTab extends StatelessWidget {
                   context, 
                   MaterialPageRoute(
                     builder: (BuildContext context) => ChatScreen(
+                      id: conversations[i].id,
                       userType: userType,
                       title: conversations[i].name,
                       texts: conversations[i].texts.map((dynamic message) => Message.fromJson(message)).toList()

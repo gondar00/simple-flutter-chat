@@ -22,7 +22,7 @@ class ChatListScreen extends StatelessWidget {
         centerTitle: false,
         backgroundColor: userType == 'patient' ? DARK_GREEN : PALE_ORANGE,
         actions: <Widget>[
-          Visibility(
+            Visibility(
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
