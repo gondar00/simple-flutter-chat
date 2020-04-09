@@ -17,7 +17,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'https://tokbox.bintray.com/maven' }
     }
 }
 
