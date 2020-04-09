@@ -3,7 +3,6 @@ description: An e doctor application
 version: 1.0.0+1
 environment:
   sdk: ">=2.6.0 <3.0.0"
-  flutter: ^1.17.0
 dependencies:
   flutter:
     sdk: flutter
@@ -20,7 +19,7 @@ dependencies:
   # firebase FCM
   firebase_messaging: ^6.0.13
   # lazy load + increased scalability for classes with a listening mecanism that grows exponentially in complexity
-  provider: 4.1.0-dev+2
+  provider: ^2.0.0
   # db for sync
   cloud_firestore: 0.13.4+2
   firebase_storage: ^3.1.5
