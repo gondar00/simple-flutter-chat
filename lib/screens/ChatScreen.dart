@@ -229,22 +229,22 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget subscriptionComponent() {
-    return Subscription<Map<String, dynamic>>(
-      'onTextAdded', 
-      subscriptionNewText,
-      onCompleted: () { print("subscription"); },
-      builder: ({
-        bool loading,
-        Map<String, dynamic> payload,
-        dynamic error,
-      }) {
-      print("----updated----payloadnoo");
+    // return Subscription<Map<String, dynamic>>(
+    //   'onTextAdded', 
+    //   subscriptionNewText,
+    //   onCompleted: () { print("subscription"); },
+    //   builder: ({
+    //     bool loading,
+    //     Map<String, dynamic> payload,
+    //     dynamic error,
+    //   }) {
+    //   print("----updated----payloadnoo");
       
-      if(loading)
-       return loader();
+    //   if(loading)
+    //    return loader();
 
-      print("----updated----payload");
-      print(payload);
+    //   print("----updated----payload");
+    //   print(payload);
       
       return Flexible(
         child: ListView.builder(
@@ -253,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
           itemBuilder: (BuildContext ctx, int i) => renderChatMessage(widget.texts[i], widget.userType == 'patient'),
         ),
       );
-    });
+    // });
   }
 
   @override

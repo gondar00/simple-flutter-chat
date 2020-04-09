@@ -38,13 +38,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-<<<<<<< HEAD
-        applicationId "com.example.e_doctor"
-        minSdkVersion 24
-=======
         applicationId "com.project.e_doctor"
-        minSdkVersion 18
->>>>>>> parent of 9d3c309... add platform specific opentok sdk which is trigged through flutter platform channel
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -75,14 +70,13 @@ android {
         }
 
         debug{
-            minifyEnabled true
-            shrinkResources true
-            multiDexEnabled true
+            // minifyEnabled true
+            // shrinkResources true
+            // multiDexEnabled true
 
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin. To learn more, go to the section about
             // R8 configuration files.
-            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
