@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.e_doctor">
+    package="com.example.e_doctor" xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        tools:replace="android:label"
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="E doctor">

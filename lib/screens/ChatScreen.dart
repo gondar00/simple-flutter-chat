@@ -16,6 +16,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:e_doctor/screens/chat_gql.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({this.id, this.userType, this.title = 'Conversation between 2', this.texts});
@@ -61,27 +62,48 @@ class _ChatScreenState extends State<ChatScreen> {
 
   static const MethodChannel platform = MethodChannel('com.video.sdk/opentok');
 
-  void _openVideoCallPlatformScreen() async {
+  // void _openVideoCallPlatformScreen() async {
+  //   try {
+  //     await platform.invokeMethod<dynamic>('openVideoChat');
+  //   } on PlatformException catch (_) {
+  //   }
+  // }
+
+  _joinMeeting() async {
     try {
-      await platform.invokeMethod<dynamic>('openVideoChat');
-    } on PlatformException catch (_) {
+      final JitsiMeetingOptions options = JitsiMeetingOptions()
+        ..room = 'corona-case-10101-99'
+        ..serverURL = null
+        ..subject = 'Patient name'
+        ..userDisplayName = 'Patient'
+        ..userEmail = ''
+        ..audioOnly = true
+        ..audioMuted = true
+        ..videoMuted = true;
+
+      await JitsiMeet.joinMeeting(options);
+    } catch (error) {
+      debugPrint('error: $error');
     }
   }
 
-  Future<bool> isMe(String uid) async {
+  Future<String> isMe(String uid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('uid') == uid;
+    print('------printing----prfs');
+    print(prefs.getString('uid'));
+    return prefs.getString('uid');
   }
 
   Widget renderChatMessage(Message message, bool patient) {
-    print('--------printing-----message');
-    print(message.text);
+    // print('--------printing-----isMe(message.id)');
+    // print(isMe(message.id));
+    // print(isMe(message.id) == message.id);
     if(message.text == null) return Container();
     return Column(
       children: <Widget>[
         Align(
           // TODO(patient): fix display based on token
-          alignment: isMe(message.id) != false ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: isMe(message.id) == message.id ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
@@ -246,7 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             icon: Icon(Icons.call),
             onPressed: () {
-              _openVideoCallPlatformScreen();
+              _joinMeeting();
             },
           ),
           IconButton(

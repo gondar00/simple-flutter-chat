@@ -8,22 +8,22 @@ import io.flutter.plugins.GeneratedPluginRegistrant
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.video.sdk/opentok"
+    // private val CHANNEL = "com.video.sdk/opentok"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-            // Note: this method is invoked on the main thread.
-            call, result ->
-            if (call.method == "openVideoChat") {
-                val intent = Intent(this, VideoActivity::class.java)
-                startActivity(intent)
-                // result.error("UNAVAILABLE", "Battery level not available.", null)
+        // MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
+        //     // Note: this method is invoked on the main thread.
+        //     call, result ->
+        //     if (call.method == "openVideoChat") {
+        //         val intent = Intent(this, VideoActivity::class.java)
+        //         startActivity(intent)
+        //         // result.error("UNAVAILABLE", "Battery level not available.", null)
 
-            } else {
-                result.notImplemented()
-            }
-        }
+        //     } else {
+        //         result.notImplemented()
+        //     }
+        // }
     }
 }

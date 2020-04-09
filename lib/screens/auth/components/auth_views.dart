@@ -159,8 +159,8 @@ class _AuthViewsState extends State<AuthViews> {
       documentNode: gql(signupMutation),
       update: (Cache cache, QueryResult result) => cache,
       onCompleted: (dynamic result) async {
-        // print('----printing----result');
-        // print(result);
+        print('----printing----result');
+        print(result);
 
         final AuthModel response = AuthModel.fromJson(
           result['signup'],

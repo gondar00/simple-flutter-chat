@@ -7,10 +7,10 @@ class AuthModel {
 
   factory AuthModel.fromJson(Map<String, dynamic> json) {
     return AuthModel(
-        id: json["id"],
-        error:
-            json['error'] != null ? ErrorModel.fromJson(json['error']) : null,
-        token: json['token']);
+      id: json['id'] as String,
+      error: json['error'] != null ? ErrorModel.fromJson(json['error']) : null,
+      token: json['token'] as String
+    );
   }
 }
 

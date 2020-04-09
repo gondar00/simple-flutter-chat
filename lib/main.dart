@@ -100,15 +100,18 @@ class AuthPage extends StatelessWidget {
       getToken: () => 'Bearer ${appState.token}',
     );
 
-    final WebSocketLink websocketLink = WebSocketLink(
-      url: 'ws://infinite-plateau-74257.herokuapp.com',
-      config: const SocketClientConfig(
-        autoReconnect: true,
-        inactivityTimeout: Duration(seconds: 30),
-      ),
-    );
+    final Map<String, String> initPayload = {'token': 'Bearer ${appState.token}'};
+    // final WebSocketLink websocketLink = WebSocketLink(
+    //   url: 'ws://infinite-plateau-74257.herokuapp.com',
+    //   config: SocketClientConfig(
+    //     autoReconnect: true,
+    //     inactivityTimeout: const Duration(seconds: 30),
+    //     initPayload: () => initPayload,
+    //   ),
+    // );
 
-    final Link link = authLink.concat(httpLink).concat(websocketLink);
+    final Link link = authLink.concat(httpLink);
+    // final Link link = authLink.concat(httpLink).concat(websocketLink);
 
     ValueNotifier<GraphQLClient> client = ValueNotifier(
       GraphQLClient(cache: InMemoryCache(), link: link),
