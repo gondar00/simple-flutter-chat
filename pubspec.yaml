@@ -19,12 +19,10 @@ dependencies:
   # firebase FCM
   firebase_messaging: ^6.0.13
   # lazy load + increased scalability for classes with a listening mecanism that grows exponentially in complexity
-  provider: ^2.0.0
+  provider: ^4.1.0-dev+2
   # db for sync
   cloud_firestore: 0.13.4+2
   firebase_storage: ^3.1.5
-  # video call
-  # flutter_webrtc: 0.2.7
   # graphql 
   graphql_flutter: 3.1.0-beta.1
   build_runner: ^1.5.2
@@ -32,10 +30,17 @@ dependencies:
   json_annotation: ^3.0.0
   # Used for momentjs like date stuff
   jiffy: ^3.0.1
-  # image picker
-  image_picker: ^0.6.4
+  # file picker
+  # image_picker: ^0.6.4
+  file_picker: ^1.6.0
   # video chat
   jitsi_meet: ^0.1.4
+  # launch external urls - google maps in this case
+  url_launcher: ^5.4.2
+  # fetch user location
+  location: ^3.0.2
+  # send email from native view
+  flutter_email_sender: 3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

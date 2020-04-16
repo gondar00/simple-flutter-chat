@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:e_doctor/screens/ChatScreen.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:e_doctor/tabs/chats_gql.dart';
+import 'package:e_doctor/graphql/query/get_my_chats.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:e_doctor/models/ChatMessage.dart';
@@ -35,8 +35,8 @@ class ErrorModel {
   }
 }
 
-class ChatsTab extends StatelessWidget {
-  ChatsTab({this.userType});
+class DoctorHomeScreen extends StatelessWidget {
+  DoctorHomeScreen({this.userType});
   final String userType;
 
   @override

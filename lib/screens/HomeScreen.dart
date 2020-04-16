@@ -1,8 +1,6 @@
 
+import 'package:e_doctor/screens/DoctorHomeScreen.dart';
 import 'package:flutter/material.dart';
-
-import 'package:e_doctor/tabs/ChatsTab.dart';
-
 import 'package:e_doctor/constants/colors.dart';
 
 import 'package:e_doctor/screens/PatientHomeScreen.dart';
@@ -19,24 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
-  // final Future<SharedPreferences> _sprefs = SharedPreferences.getInstance();
-  // Color color;
-
-  // Future<void> getData() async {
-  //   print('called');
-  //   final SharedPreferences prefs = await _sprefs;
-  //   Color color = prefs.getString('user-type') == 'patient' ? LIGHT_GREEN : PALE_ORANGE;
-  //   setState(() {
-  //     color = color;
-  //   });
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getData();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -53,17 +33,6 @@ class _HomeScreen extends State<HomeScreen> {
           ),
           centerTitle: false,
           backgroundColor: widget.userType == 'patient' ? DARK_GREEN : PALE_ORANGE,
-          // bottom: TabBar(
-          //   indicatorColor: LIGHT_GREY_COLOR,
-          //   tabs: <Widget>[
-          //     Tab(
-          //       text: 'CHATS',
-          //     ),
-          //     Tab(
-          //       text: 'CALLS',
-          //     ),
-          //   ],
-          // ),
           actions: <Widget>[
             Visibility(
                 child: IconButton(
@@ -78,23 +47,7 @@ class _HomeScreen extends State<HomeScreen> {
 
           ],
         ),
-        body: widget.userType == 'patient' ?  PatientHomeScreen(userType: widget.userType) : ChatsTab(userType: widget.userType),
-        // body: TabBarView(
-        //   children: <Widget>[
-        //     ChatsTab(),
-        //     CallsTab(),
-        //   ],
-        // ),
-        // floatingActionButton: FloatingActionButton(
-        //   child: Icon(
-        //     Icons.chat
-        //   ),
-        //   onPressed: () {
-        //       Navigator.push(context,
-        //           MaterialPageRoute(builder: (context) => UserListScreen()));
-        //     },
-        //   backgroundColor: PALE_ORANGE,
-        // ),
+        body: widget.userType == 'patient' ?  PatientHomeScreen(userType: widget.userType) : DoctorHomeScreen(userType: widget.userType),
       ),
     );
   }

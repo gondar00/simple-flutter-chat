@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:e_doctor/tabs/ChatsTab.dart';
+import 'package:e_doctor/screens/DoctorHomeScreen.dart';
 
 import 'package:e_doctor/constants/colors.dart';
 
@@ -34,7 +34,7 @@ class ChatListScreen extends StatelessWidget {
 
         ],
       ),
-      body: ChatsTab(userType: userType),
+      body: DoctorHomeScreen(userType: userType),
     );
   }
 }

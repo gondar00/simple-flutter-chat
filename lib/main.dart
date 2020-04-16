@@ -19,17 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var token = prefs.getString('token');
-  // HttpLink httpLink = HttpLink(uri: 'https://infinite-plateau-74257.herokuapp.com');
 
-  // final AuthLink authLink = AuthLink(
-  //   getToken: () => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjazhtdWhpbjc4bTM2MGE4NzV0djMzYnJwIiwiaWF0IjoxNTg2MDc5MDEwfQ._-hMf0VE6tkQV1tR-vU4EBRM4OQPs18IP54e3KlVy_w',
-  // );
-
-  // final Link link = authLink.concat(httpLink);
-
-  // ValueNotifier<GraphQLClient> client = ValueNotifier(
-  //   GraphQLClient(cache: InMemoryCache(), link: link),
-  // );
   runApp(App(auth: token != null ));
 }
 
