@@ -31,7 +31,6 @@ class ChatListScreen extends StatelessWidget {
               ),
               visible: userType == 'patient' ,
           )
-
         ],
       ),
       body: DoctorHomeScreen(userType: userType),

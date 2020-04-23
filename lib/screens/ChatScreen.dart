@@ -156,6 +156,54 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  _launchURL(String message) async {
+    if (await canLaunch(message)) {
+      await launch(message);
+    } else {
+      throw 'Could not launch $message';
+    }
+  }
+
+  Widget _getText(String message) {
+    if(message == null)
+      return Container();
+    
+    if(message.contains('aac'))
+      return GestureDetector(
+        child: Text("audio shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+        onTap: () => _launchURL(message)
+      );
+
+    if(message.contains('mov'))
+      return GestureDetector(
+        child: Text("video shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+        onTap: () => _launchURL(message)
+      );
+
+    if(message.contains('latitude'))
+      return GestureDetector(
+        child: Text("location shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+        onTap: () => _launchURL(message)
+      );
+  
+    if(message.contains('png'))
+      try {
+        return ClipRRect(
+          child: Image.network(message),
+        );
+      } catch (e) {
+
+      }
+
+      return Text(
+        message,
+        style: TextStyle(
+          fontSize: 16,
+          color: WHITE_COLOR,
+        ),
+      );
+  }
+
   Future<String> isMe(String uid) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('------printing----prfs');
@@ -169,34 +217,6 @@ class _ChatScreenState extends State<ChatScreen> {
     // print(isMe(message.id) == message.id);
     if(message.text == null)
       return Container();
-
-    if(message.id == 'image')
-      return ClipRRect(
-        child: FlatButton(
-          onPressed: () {
-            
-          },
-          child: Text(
-            "Multimedia shared.",
-          ),
-        ),
-      );
-      // return ClipRRect(
-      //   child: Image.network(message.text),
-      // );
-
-    
-    if(message.id == 'location')
-      return ClipRRect(
-        child: FlatButton(
-          onPressed: () {
-            
-          },
-          child: Text(
-            "Locations shared.",
-          ),
-        ),
-      );
 
     return Column(
       children: <Widget>[
@@ -224,13 +244,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Text(
-              message.text,
-              style: TextStyle(
-                fontSize: 16,
-                color: WHITE_COLOR,
-              ),
-            ),
+            child: _getText(message.text)
           ),
         ),
       ],
@@ -480,6 +494,57 @@ class _ChatScreenState extends State<ChatScreen> {
     // });
   }
 
+  bool _accept = false;
+   Widget _toolbar() {
+    return Container(
+        alignment: Alignment.bottomCenter,
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: ButtonBar(
+            children: <Widget>[
+              RawMaterialButton(
+                onPressed: () => {
+                  setState(() {
+                    _accept = true;
+                  })
+                },
+                child: Text(
+                  'Accept',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontSize: 16.0,
+                    height: 1.5
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                elevation: 2.0,
+                fillColor: PALE_ORANGE,
+                padding: const EdgeInsets.all(18.0),
+              ),
+              RawMaterialButton(
+                onPressed: () => {
+                  Navigator.pop(context)
+                },
+                child: Text(
+                  'Reject',
+                  style: TextStyle(
+                    color: Colors.white,
+                    letterSpacing: 1.2,
+                    fontSize: 16.0,
+                    height: 1.5
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                elevation: 2.0,
+                fillColor: Colors.red,
+                padding: const EdgeInsets.all(18.0),
+              ),
+            ],
+          )
+      );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -509,7 +574,7 @@ class _ChatScreenState extends State<ChatScreen> {
           subscriptionComponent(),
           Divider(),
           Container(
-            child: renderTextBox(),
+            child: widget.userType == 'doctor' ? _accept ? renderTextBox() : _toolbar() : renderTextBox(),
           ),
         ],
       ),

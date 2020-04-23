@@ -1,5 +1,6 @@
 
 import 'package:e_doctor/screens/DoctorHomeScreen.dart';
+import 'package:e_doctor/screens/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_doctor/constants/colors.dart';
 
@@ -43,8 +44,18 @@ class _HomeScreen extends State<HomeScreen> {
                   icon: Icon(Icons.chat_bubble_outline),
                 ),
                 visible: widget.userType == 'patient' ,
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => WelcomeScreen(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.power_settings_new),
             )
-
           ],
         ),
         body: widget.userType == 'patient' ?  PatientHomeScreen(userType: widget.userType) : DoctorHomeScreen(userType: widget.userType),

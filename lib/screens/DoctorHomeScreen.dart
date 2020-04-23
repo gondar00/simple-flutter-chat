@@ -35,10 +35,15 @@ class ErrorModel {
   }
 }
 
-class DoctorHomeScreen extends StatelessWidget {
+class DoctorHomeScreen extends StatefulWidget {
   DoctorHomeScreen({this.userType});
   final String userType;
 
+  @override
+  _DoctorHomeScreenState createState() => _DoctorHomeScreenState();
+}
+
+class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -67,19 +72,13 @@ class DoctorHomeScreen extends StatelessWidget {
               title: Text(conversations[i].name),
               subtitle: Text(Jiffy(conversations[i].updatedAt).fromNow()),
               trailing: Text(Jiffy(conversations[i].createdAt).fromNow()),
-              leading: CircleAvatar(
-                backgroundColor: Colors.red,
-                child: const Text(
-                  'E'
-                ),
-              ),
               onTap: () {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(
                     builder: (BuildContext context) => ChatScreen(
                       id: conversations[i].id,
-                      userType: userType,
+                      userType: widget.userType,
                       title: conversations[i].name,
                       texts: conversations[i].texts.map((dynamic message) => Message.fromJson(message)).toList()
                     ),

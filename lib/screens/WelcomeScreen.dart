@@ -20,19 +20,19 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-static List<Example> items = [
-  Example(
-    header: 'E-DOCTOR',
-    description:
-        'Where your health is our priority',
-    image: 'assets/images/welcome-illustration-1.png',
-  ),
-  Example(
-    header: '',
-    description: 'Start your journey with one click',
-    image: 'assets/images/welcome-illustration-2.png',
-  )
-];
+  static List<Example> items = [
+    Example(
+      header: 'E-DOCTOR',
+      description:
+          'Where your health is our priority',
+      image: 'assets/images/welcome-illustration-1.png',
+    ),
+    Example(
+      header: '',
+      description: 'Start your journey with one click',
+      image: 'assets/images/welcome-illustration-2.png',
+    )
+  ];
   List<Widget> slides = items
       .map((Example item) => Container(
           padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -113,7 +113,7 @@ static List<Example> items = [
                   )
                 },
                 child: Text(
-                  'Doctor',
+                  'Doctor (nutritionist)',
                   style: TextStyle(
                     color: Colors.white,
                     letterSpacing: 1.2,

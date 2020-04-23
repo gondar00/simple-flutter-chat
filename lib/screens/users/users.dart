@@ -101,7 +101,7 @@ class _UserListScreenState extends State<UserListScreen> {
           style: TextStyle(color: BLACK_COLOR),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Example(Fever/Cough/Headache...)',
+            hintText: 'Ex: Fever/Cough/Headache...',
             hintStyle: TextStyle(color: Colors.grey),
           ),
           onChanged: (val) {
@@ -156,7 +156,7 @@ class _UserListScreenState extends State<UserListScreen> {
           selectionList.length == 0
               ? null
               : () {
-                    run({'participantIds': selectionList, 'name': 'test'});
+                    run({'participantIds': selectionList, 'name': 'test', 'text': groupName});
                 },
           primary: true,
         );

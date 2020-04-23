@@ -68,13 +68,14 @@ class _AuthViewsState extends State<AuthViews> {
       children: <Widget>[
         Container(margin: EdgeInsets.only(top: 60)),
         gradientTextComponent(
-          widget.userType == 'doctor' ? ORANGE_GRADIENT : GREEN_GRADIENT,
+          widget.userType == 'doctor'  ? ORANGE_GRADIENT : GREEN_GRADIENT,
           'Welcome',
         ),
         // Container(margin: EdgeInsets.only(top: 35)),
         // messageTextComponent(),
         Container(margin: EdgeInsets.only(top: 35)),
-        // if (widget.signup) ...nameInputComponent(),
+        if (widget.signup && widget.userType != 'doctor') ...signupPatientComponents(),
+        if (widget.signup && widget.userType == 'doctor') ...signupDoctorComponents(),
         textFieldComponent(type: 'email', hintText: 'Email Address'),
         Container(margin: EdgeInsets.only(top: 20)),
         textFieldComponent(
@@ -91,10 +92,31 @@ class _AuthViewsState extends State<AuthViews> {
     );
   }
 
-  List<Widget> nameInputComponent() {
+  List<Widget> signupPatientComponents() {
     return [
-      textFieldComponent(type: 'name', hintText: 'Display Name'),
-      Container(margin: EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Name as per your Emirate ID'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Emirate ID'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Home address'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'number', hintText: 'Mobile number'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+    ];
+  }
+
+  List<Widget> signupDoctorComponents() {
+    return [
+      textFieldComponent(type: 'name', hintText: 'Name as per medical license'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Medical license ID'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Hospital name'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'name', hintText: 'Hospital address'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'number', hintText: 'Mobile number'),
+      Container(margin: const EdgeInsets.only(top: 20)),
     ];
   }
 
