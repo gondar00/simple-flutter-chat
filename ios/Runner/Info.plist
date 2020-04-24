@@ -24,6 +24,11 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>NSPhotoLibraryUsageDescription</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>NSCameraUsageDescription</string>
 	<key>NSMicrophoneUsageDescription</key>

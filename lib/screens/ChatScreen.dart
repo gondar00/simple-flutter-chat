@@ -15,6 +15,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:e_doctor/screens/chat_gql.dart';
+import 'package:e_doctor/screens/UserScreen.dart';
+import 'package:e_doctor/screens/AudioPlayer.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
@@ -168,25 +170,26 @@ class _ChatScreenState extends State<ChatScreen> {
     if(message == null)
       return Container();
     
-    if(message.contains('aac'))
-      return GestureDetector(
-        child: Text("audio shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
-        onTap: () => _launchURL(message)
-      );
+    if(message.contains('aac') || message.contains('mp3'))
+      // return GestureDetector(
+      //   child: Text('audio shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+      //   onTap: () => _launchURL(message)
+      // );
+      return AudioApp(url: message);
 
-    if(message.contains('mov'))
+    if(message.contains('mov') || message.contains('mp4'))
       return GestureDetector(
-        child: Text("video shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+        child: Text('video shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
         onTap: () => _launchURL(message)
       );
 
     if(message.contains('latitude'))
       return GestureDetector(
-        child: Text("location shared", style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+        child: Text('location shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
         onTap: () => _launchURL(message)
       );
   
-    if(message.contains('png'))
+    if(message.contains('png') || message.contains('jpg'))
       try {
         return ClipRRect(
           child: Image.network(message),
@@ -555,6 +558,13 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: widget.userType == 'patient' ? DARK_GREEN : PALE_ORANGE,
         actions: <Widget>[
           locationComponent(),
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+               Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) => UserScreen(userType: widget.userType)));
+            },
+          ),
           IconButton(
             icon: Icon(Icons.call),
             onPressed: () {

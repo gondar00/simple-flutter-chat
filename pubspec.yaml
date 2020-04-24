@@ -40,7 +40,9 @@ dependencies:
   # fetch user location
   location: ^3.0.2
   # send email from native view
-  flutter_email_sender: 3.0.1
+  flutter_email_sender: ^3.0.1
+  # play audio
+  audioplayer: ^0.8.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
