@@ -7,6 +7,7 @@ String getChatsQuery = """
         createdAt
         updatedAt
         participants {
+          id
           username
         }
         texts {

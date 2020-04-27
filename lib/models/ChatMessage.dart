@@ -31,10 +31,11 @@ class Conversation {
   final String createdAt;
   final String updatedAt;
   final String lastMessage;
+  final List<dynamic> participants;
   final List<dynamic> texts;
   final ErrorModel error;
 
-  Conversation({this.id, this.name, this.createdAt, this.updatedAt, this.texts, this.lastMessage, this.error});
+  Conversation({this.id, this.name, this.createdAt, this.updatedAt, this.participants, this.texts, this.lastMessage, this.error});
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
@@ -42,8 +43,23 @@ class Conversation {
       name: json['name'] as String,
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
+      participants: json['participants'] as List<dynamic>,
       texts: json['texts'] as List<dynamic>,
       error: json['error'] != null ? ErrorModel.fromJson(json['error']) : null
+    );
+  }
+}
+
+class Participant {
+  Participant({this.id, this.username });
+
+  final String id;
+  final String username;
+
+  factory Participant.fromJson(Map<String, dynamic> json) {
+    return Participant(
+      id: json['id'] as String,
+      username: json['username'] as String,
     );
   }
 }

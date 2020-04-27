@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:e_doctor/models/ChatMessage.dart';
 
-
 class ConversationList {
   ConversationList({this.conversations});
 
@@ -80,6 +79,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                       id: conversations[i].id,
                       userType: widget.userType,
                       title: conversations[i].name,
+                      participants: conversations[i].participants.map((dynamic participant) => Participant.fromJson(participant)).toList(),
                       texts: conversations[i].texts.map((dynamic message) => Message.fromJson(message)).toList()
                     ),
                   ),
@@ -88,6 +88,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
             );
           },
         );
-      });
+      }
+    );
   }
 }

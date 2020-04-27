@@ -21,7 +21,7 @@ dependencies:
   # lazy load + increased scalability for classes with a listening mecanism that grows exponentially in complexity
   provider: ^4.1.0-dev+2
   # db for sync
-  cloud_firestore: 0.13.4+2
+  cloud_firestore: ^0.13.5
   firebase_storage: ^3.1.5
   # graphql 
   graphql_flutter: 3.1.0-beta.1
@@ -43,6 +43,8 @@ dependencies:
   flutter_email_sender: ^3.0.1
   # play audio
   audioplayer: ^0.8.1
+  # play video
+  chewie: ^0.9.7
 dev_dependencies:
   flutter_test:
     sdk: flutter

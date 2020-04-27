@@ -17,6 +17,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:e_doctor/screens/chat_gql.dart';
 import 'package:e_doctor/screens/UserScreen.dart';
 import 'package:e_doctor/screens/AudioPlayer.dart';
+import 'package:e_doctor/screens/VideoPlayer.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
@@ -30,7 +32,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({this.id, this.userType, this.title = 'Conversation between 2', this.texts});
+  ChatScreen({this.id, this.userType, this.title, this.texts, this.participants});
 
   // invoke native method
   // static const MethodChannel platform = MethodChannel('com.video.sdk/opentok');
@@ -38,6 +40,7 @@ class ChatScreen extends StatefulWidget {
   final String id;
   final String userType;
   final String title;
+  final List<Participant> participants;
   final List<Message> texts;
 
   @override
@@ -98,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
       text: 'doctor@gmail.com',
     );
 
-    final _subjectController = TextEditingController(text: 'Dear doctor please check ');
+    final _subjectController = TextEditingController(text: 'Dear doctor, ...');
 
     final _bodyController = TextEditingController(
       text: 'The email body.',
@@ -131,7 +134,11 @@ class _ChatScreenState extends State<ChatScreen> {
     ));
   }
 
-  _launchMap({String lat, String long}) async{
+  _launchMap(String message) async{
+    var data = message.split(':');
+    data.removeAt(0);
+    var lat = data.first;
+    var long = data.last;
     var mapSchema = 'geo:$lat,$long';
     if (await canLaunch(mapSchema)) {
       await launch(mapSchema);
@@ -178,18 +185,23 @@ class _ChatScreenState extends State<ChatScreen> {
       return AudioApp(url: message);
 
     if(message.contains('mov') || message.contains('mp4'))
-      return GestureDetector(
-        child: Text('video shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
-        onTap: () => _launchURL(message)
+      // return GestureDetector(
+      //   child: Text('video shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
+      //   onTap: () => _launchURL(message)
+      // );
+      return ChewieListItem(
+        videoPlayerController: VideoPlayerController.network(
+          message,
+        ),
       );
 
-    if(message.contains('latitude'))
+    if(message.contains('location'))
       return GestureDetector(
         child: Text('location shared', style: TextStyle(decoration: TextDecoration.underline, color: Colors.white)),
-        onTap: () => _launchURL(message)
+        onTap: () => _launchMap(message)
       );
   
-    if(message.contains('png') || message.contains('jpg'))
+    if(message.contains('png') || message.contains('jpg') || message.contains('jpeg'))
       try {
         return ClipRRect(
           child: Image.network(message),
@@ -207,17 +219,12 @@ class _ChatScreenState extends State<ChatScreen> {
       );
   }
 
-  Future<String> isMe(String uid) async {
+  Future<String> isMe() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('------printing----prfs');
-    print(prefs.getString('uid'));
     return prefs.getString('uid');
   }
 
   Widget renderChatMessage(Message message, bool patient) {
-    // print('--------printing-----isMe(message.id)');
-    // print(isMe(message.id));
-    // print(isMe(message.id) == message.id);
     if(message.text == null)
       return Container();
 
@@ -225,7 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
       children: <Widget>[
         Align(
           // TODO(patient): fix display based on token
-          alignment: isMe(message.id) == message.id ? Alignment.centerRight : Alignment.centerLeft,
+          alignment: isMe() == message.id ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
@@ -281,38 +288,36 @@ class _ChatScreenState extends State<ChatScreen> {
             // setState(() {
             //   isLoading = true;
             // });
-            File file = await FilePicker.getFile();
+            final File file = await FilePicker.getFile();
 
             // await ImagePicker.pickImage(source: ImageSource.gallery).then((File image) async {
-              final StorageReference storageReference = FirebaseStorage.instance
-                .ref()
-                .child('images/${path.basename(file.path)}}');
-              final StorageUploadTask uploadTask = storageReference.putFile(file);
-              await uploadTask.onComplete;
-              storageReference
-                .getDownloadURL()
-                .then((dynamic fileURL) {
-                  print('-------File Uploaded--------');
-                  // print(fileURL as String);\
-                  print(stateTexts.length);
-                  setState(() {
-                    stateTexts.add(Message(
-                      id: 'image',
-                      text: fileURL as String,
-                      createdAt: Jiffy().format(),
-                      author: Author(
-                        id: 'author',
-                        username: 'author'
-                      )
-                    ));
-                  });
-                  print(stateTexts.length);
-                  // now send message 
-                  run({'conversationId': widget.id, 'text': fileURL });
-                  setState(() {
-                    isLoading = false;
-                  });
-              });
+            final StorageReference storageReference = FirebaseStorage.instance
+              .ref()
+              .child('images/${path.basename(file.path)}}');
+            final StorageUploadTask uploadTask = storageReference.putFile(file);
+            await uploadTask.onComplete;
+            storageReference
+              .getDownloadURL()
+              .then((dynamic fileURL) {
+                print('-------File Uploaded--------');
+                print(stateTexts.length);
+                setState(() {
+                  stateTexts.add(Message(
+                    id: 'image',
+                    text: fileURL as String,
+                    createdAt: Jiffy().format(),
+                    author: Author(
+                      id: 'author',
+                      username: 'author'
+                    )
+                  ));
+                });
+                // now send message 
+                run({'conversationId': widget.id, 'text': fileURL });
+                setState(() {
+                  isLoading = false;
+                });
+            });
           },
         );
       },
@@ -324,13 +329,7 @@ class _ChatScreenState extends State<ChatScreen> {
       options: MutationOptions(
         documentNode: gql(sendTextMessageMutation),
         update: (Cache cache, QueryResult result) => cache,
-        onCompleted: (dynamic result) {
-          // print('-----created-----message');
-          // print(result['sendTextMessage']['text']);
-          // print(result);
-          // print(result.exception && result.exception);
-          // Navigator.pop(context);
-        },
+        onCompleted: (dynamic result) {},
       ),
       builder: (RunMutation run, QueryResult result) {
         return FloatingActionButton(
@@ -362,13 +361,7 @@ class _ChatScreenState extends State<ChatScreen> {
       options: MutationOptions(
         documentNode: gql(sendTextMessageMutation),
         update: (Cache cache, QueryResult result) => cache,
-        onCompleted: (dynamic result) {
-          // print('-----created-----message');
-          // print(result['sendTextMessage']['text']);
-          // print(result);
-          // print(result.exception && result.exception);
-          // Navigator.pop(context);
-        },
+        onCompleted: (dynamic result) {},
       ),
       builder: (RunMutation run, QueryResult result) {
         return IconButton(
@@ -396,11 +389,19 @@ class _ChatScreenState extends State<ChatScreen> {
             }
 
             _locationData = await location.getLocation();
-            run({'conversationId': widget.id, 'text': '$_locationData[latitude]:$_locationData[longitude]'});
+
+            /// Latitude in degrees
+            final double latitude = _locationData.latitude;
+
+            /// Longitude, in degrees
+            final double longitude = _locationData.longitude;
+            
+            final String _text = 'location:$latitude:$longitude';
+            run({'conversationId': widget.id, 'text': _text});
             setState(() {
               stateTexts.add(Message(
                 id: 'location',
-                text: _input,
+                text: _text,
                 createdAt: Jiffy().format(),
                 author: Author(
                   id: 'author',
@@ -484,6 +485,8 @@ class _ChatScreenState extends State<ChatScreen> {
     //   print("----updated----payload");
     //   print(payload);
 
+
+      // scroll to bottom
       Timer(Duration(milliseconds: 1000), () => _controller.jumpTo(_controller.position.maxScrollExtent));
 
       return Flexible(
@@ -547,9 +550,10 @@ class _ChatScreenState extends State<ChatScreen> {
       );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    print('id');
+    print(widget.id);
     return Scaffold(
       backgroundColor: WHITE_COLOR,
       appBar: AppBar(
@@ -560,9 +564,12 @@ class _ChatScreenState extends State<ChatScreen> {
           locationComponent(),
           IconButton(
             icon: Icon(Icons.person),
-            onPressed: () {
+            onPressed: () async {
+               final String id = await isMe();
+               final List<Participant> participants = widget.participants;
+               Participant participant = widget.userType != 'doctor' ? participants.first : participants.last;
                Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => UserScreen(userType: widget.userType)));
+                MaterialPageRoute(builder: (BuildContext context) => UserScreen(userType: widget.userType, id: participant.id)));
             },
           ),
           IconButton(

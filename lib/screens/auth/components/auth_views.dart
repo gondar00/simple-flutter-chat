@@ -96,11 +96,13 @@ class _AuthViewsState extends State<AuthViews> {
     return [
       textFieldComponent(type: 'name', hintText: 'Name as per your Emirate ID'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'name', hintText: 'Emirate ID'),
+      textFieldComponent(type: 'emirateId', hintText: 'Emirate ID'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'name', hintText: 'Home address'),
+      textFieldComponent(type: 'address', hintText: 'Home address'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'number', hintText: 'Mobile number'),
+      textFieldComponent(type: 'mobile', hintText: 'Mobile number'),
+      Container(margin: const EdgeInsets.only(top: 20)),
+      textFieldComponent(type: 'medicalRecord', hintText: 'Medical record'),
       Container(margin: const EdgeInsets.only(top: 20)),
     ];
   }
@@ -109,13 +111,13 @@ class _AuthViewsState extends State<AuthViews> {
     return [
       textFieldComponent(type: 'name', hintText: 'Name as per medical license'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'name', hintText: 'Medical license ID'),
+      textFieldComponent(type: 'medicalLicense', hintText: 'Medical license ID'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'name', hintText: 'Hospital name'),
+      textFieldComponent(type: 'hospital', hintText: 'Hospital name'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'name', hintText: 'Hospital address'),
+      textFieldComponent(type: 'address', hintText: 'Hospital address'),
       Container(margin: const EdgeInsets.only(top: 20)),
-      textFieldComponent(type: 'number', hintText: 'Mobile number'),
+      textFieldComponent(type: 'mobile', hintText: 'Mobile number'),
       Container(margin: const EdgeInsets.only(top: 20)),
     ];
   }
@@ -213,11 +215,25 @@ Widget gradientButtonComponent(RunMutation runMutation, QueryResult result) {
     onTap: () {
       final String email = inputValues['email'] ?? '';
       final String pass = inputValues['password'] ?? '';
+      final String name = inputValues['name'] ?? '';
+      final String emirateId = inputValues['emirateId'] ?? '';
+      final String address = inputValues['address'] ?? '';
+      final String mobile = inputValues['mobile'] ?? '';
+      final String medicalRecord = inputValues['medicalRecord'] ?? '';
+      final String medicalLicense = inputValues['medicalLicense'] ?? '';
+      final String hospital = inputValues['hospital'] ?? '';
       if (email != '' && pass != '') {
         if(widget.signup) {
           _handleSignUp().then((FirebaseUser user) => {
             runMutation({
               'username': email,
+              'name': name,
+              'emirateId': emirateId,
+              'address': address,
+              'mobile': mobile,
+              'medicalRecord': medicalRecord,
+              'medicalLicense': medicalLicense,
+              'hospital': hospital,
             }),
             Navigator.pushReplacement(
               context,
